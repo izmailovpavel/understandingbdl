@@ -1,8 +1,33 @@
 # Bayesian Deep Learning and a Probabilistic Perspective of Generalization
 
+This repository contains experiments for the paper
+
+_Bayesian Deep Learning and a Probabilistic Perspective of Generalization_
+
+by Andrew Gordon Wilson and Pavel Izmailov.
+
+## Introduction
+
+Bayesian inference is especially compelling for deep neural networks, which are typically underspecified by the data, and can represent many compelling but different solutions.
+It can improve improve the predictive accuracy and calibration.
+In the paper, we consider different aspects of Bayesian deep learning:
+- We show that deep ensembles provide a mechanism for approximate Bayesian inference
+- We propose MultiSWA and MultiSWAG that improve over deep ensembles by marginalizing the posterior within multiple basins of attraction
+- We investigate the function-space distribution implied by a Gaussian distribution over weights from multiple different perspectives
+- We argue that while neural networks can fit randomly labeled data, the prior assigns higher mass to the correct labels; we discuss this behaviour from a probabilistic perspective and show that Gaussian processes have similar behavior
+
+In this repo we provide code for reproducing most of the experiments in the paper.
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/14368801/74967229-9542fc00-53e6-11ea-9b6e-373acf50b185.png" width=500>
+</p>
+
+
 ## Requirements
 
-We use PyTorch 1.3.1 and torchvision 0.4.2 in our experiments. Some of the other requirements are listed in `requirements.txt`
+We use PyTorch 1.3.1 and torchvision 0.4.2 in our experiments. 
+Some of the experiments may require other packages: tqdm, numpy, scipy, gpytorch v1.0.0, tabulate, matplotlib, Pillow, wand, skimage, cv2. 
+
 
 All experiments were run on a single GPU.
 
@@ -65,7 +90,7 @@ python3 experiments/train/run_swag.py --data_path=~/datasets/ --epochs=50 --data
 
 ## Preparing CIFAR10-C
 
-To produce the corrupted data use the following script.
+To produce the corrupted data use the following script (adapted from [here](https://github.com/hendrycks/robustness/blob/master/ImageNet-C/create_c/make_cifar_c.py)).
 
 ```bash
 python3 ubdl_data/make_cifar_c.py --savepath=<SAVEPATH> --datapath=<DATAPATH>
@@ -77,8 +102,18 @@ You can then load the data in PyTorch e.g. as follows:
 ```python
 testset = torchvision.datasets.CIFAR10("~/datasets/cifar10/", train=False)
 corrupted_testset = np.load("~/datasets/cifar10c/gaussian_noise_5.npz")
+testset.data = corrupted_testset["data"]
+testset.targets = corrupted_testset["labels"]
 ```
-You can then use `corrupted_testset` as a replacement for the original `testset` dataset.
+
+Below we show an example of images corrupted with _gaussian blur_. 
+We also show the negative log likelihood of Deep Ensembles, MultiSWA and MultiSWAG as a function of the number of
+independently trained models for different levels of corruption severity.
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/14368801/74967652-6c6f3680-53e7-11ea-80dd-12e66e3f5ed2.png" width=800>
+</p>
+
 
 ## Prior Experiments
 
@@ -88,20 +123,35 @@ varying `--prior_var` parameter.
 
 For the other experiments on priors we provide iPython notebooks in `experiments/priors`.
 
+In the figure below we show the correlation diagrams between MNIST classes induced by a spherical Gaussian prior on LeNet-5 weights. Left to right: prior std `alpha=0.02`, `alpha=0.1`, `alpha=1.` respectively.
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/14368801/74967915-e9021500-53e7-11ea-9d60-b99ee17126c5.png" width=250>
+  <img src="https://user-images.githubusercontent.com/14368801/74967916-e9021500-53e7-11ea-9be9-28f0b78bafb1.png" width=250>
+  <img src="https://user-images.githubusercontent.com/14368801/74967919-e99aab80-53e7-11ea-945b-36e524ea30d8.png" width=250>
+</p>
+
 ## Rethinking Generalization Experiments
 
 The folder `experiments/rethinking_generalization/cifar10_corrupted_labels` contains `.npy` files with
 numpy arrays of corrupted CIFAR-10 labels. You can use them with `experiments/train/run_swag.py` using 
 `--label_arr <PATH>`, where `<PATH>` is a path to the `.npy` file.
 
-To train Gaussian Processes for binary classification on corrupted labels, you can use the script `experiments/rethinking_generalization/gp_train_cifar_binary_corrupted.py`. You can specify the percentage of
-altered labels with `----corrupted_labels=0.1`.
+To train Gaussian processes for binary classification on corrupted labels, you can use the script `experiments/rethinking_generalization/gp_train_cifar_binary_corrupted.py`. You can specify the percentage of
+altered labels with the `corrupted_labels` argument (e.g. `--corrupted_labels=0.1`).
 
-To train Gaussian Processes for one-vs-all classification on corrupted labels, you first need to create the label array
-running `experiments/rethinking_generalization/gp_cifar_prepare_data.py`. Then you can run
+To train Gaussian processes for one-vs-all classification on corrupted labels, you first need to create the label array
+running `python3 experiments/rethinking_generalization/gp_cifar_prepare_data.py`. Then you can run
 `python3 experiments/rethinking_generalization/gp_train_cifar_one_vs_all.py --cls=<CLS> [--true_labels]`;
 here `<CLS>` is the class for which we train the one-vs-all model, and adding `--true_labels` trains the model on the true
 labels instead of corrupted.
+
+Below we show the marginal likelihood approximation (__left__:) for a Gaussian process and (__right__:) PreResNet-20 as a function of the level of label corruption. We use ELBO for GP and Laplace approximation with `swag.posteriors.Laplace` for PreResNet to approximate marginal likelihood.
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/14368801/74968139-501fc980-53e8-11ea-988f-f702407728e1.png" width=250>
+  <img src="https://user-images.githubusercontent.com/14368801/74968140-501fc980-53e8-11ea-944e-adb722547ff5.png" width=250>
+</p>
 
 ## Deep Ensembles as BMA
 
@@ -110,8 +160,16 @@ connecting deep ensembles and Bayesian model averaging.
 We provide the data used in the experiments as an `.npz` file, the notebook used to generate the data, and
 a separate notebook for each baseline.
 
+Below we show the predictive distribution for (__left__:) 200 chains of Hamiltonian Monte Carlo, (__middle__:) deep ensembles and (__right__:) variational inference. 
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/14368801/74969775-2ae08a80-53eb-11ea-9a0e-9b1ce6828c0c.png" width=250>
+  <img src="https://user-images.githubusercontent.com/14368801/74969774-2a47f400-53eb-11ea-9675-abeee0b71a71.png" width=250>
+  <img src="https://user-images.githubusercontent.com/14368801/74969777-2ae08a80-53eb-11ea-97d7-659bb26eb548.png" width=250>
+</p>
+
 
 ## References for Code Base
 
-This repo was originally forked from [this GitHub repo](https://github.com/wjmaddox/drbayes).
-Code for CIFAR-10-C corruptions is ported from [this GitHub repo](https://github.com/hendrycks/robustness/blob/master/ImageNet-C/create_c/make_cifar_c.py)
+This repo was originally forked from [the Subspace Inference GitHub repo](https://github.com/wjmaddox/drbayes).
+Code for CIFAR-10-C corruptions is ported from [this GitHub repo](https://github.com/hendrycks/robustness/blob/master/ImageNet-C/create_c/make_cifar_c.py).
