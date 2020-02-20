@@ -8,15 +8,15 @@ by Andrew Gordon Wilson and Pavel Izmailov.
 
 ## Introduction
 
-Bayesian inference is especially compelling for deep neural networks, which are typically underspecified by the data, and can represent many compelling but different solutions.
-It can improve improve the predictive accuracy and calibration.
-In the paper, we consider different aspects of Bayesian deep learning:
-- We show that deep ensembles provide a mechanism for approximate Bayesian inference
-- We propose MultiSWA and MultiSWAG that improve over deep ensembles by marginalizing the posterior within multiple basins of attraction
-- We investigate the function-space distribution implied by a Gaussian distribution over weights from multiple different perspectives
-- We argue that while neural networks can fit randomly labeled data, the prior assigns higher mass to the correct labels; we discuss this behaviour from a probabilistic perspective and show that Gaussian processes have similar behavior
+In the paper, we present a probabilistic perspective for reasoning about model construction and generalization, and consider Bayesian deep learning in this context. 
+- We show that deep ensembles provide a compelling mechanism for approximate Bayesian inference, and argue that one should think about Bayesian deep learning more from the perspective of integration, rather than simple Monte Carlo, or obtaining precise samples from a posterior.
+- We propose MultiSWA and MultiSWAG, which improve over deep ensembles by marginalizing the posterior within multiple basins of attraction.
+- We investigate the function-space distribution implied by a Gaussian distribution over weights from multiple different perspectives, considering for example the induced correlation structure across data instances.
+- We discuss temperature scaling in Bayesian deep learning.
+- We show that results in deep learning that have been presented as mysterious, requiring us to rethink generalization, can naturally be understood from a probabilistic perspective, and can also be reproduced by other models, such as Gaussian processes.
+- We argue that while Bayesian neural networks can fit randomly labelled images (which we believe to be a a desirable property), the prior assigns higher mass to structured datasets representative of the problems we want to solve; we discuss this behaviour from a probabilistic perspective and show that Gaussian processes have similar properties.
 
-In this repo we provide code for reproducing most of the experiments in the paper.
+In this repository we provide code for reproducing results in the paper.
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/14368801/74967229-9542fc00-53e6-11ea-9b6e-373acf50b185.png" width=500>
@@ -27,7 +27,6 @@ In this repo we provide code for reproducing most of the experiments in the pape
 
 We use PyTorch 1.3.1 and torchvision 0.4.2 in our experiments. 
 Some of the experiments may require other packages: tqdm, numpy, scipy, gpytorch v1.0.0, tabulate, matplotlib, Pillow, wand, skimage, cv2. 
-
 
 All experiments were run on a single GPU.
 
