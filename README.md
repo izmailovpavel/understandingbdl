@@ -22,6 +22,16 @@ In this repository we provide code for reproducing results in the paper.
   <img src="https://user-images.githubusercontent.com/14368801/74967229-9542fc00-53e6-11ea-9b6e-373acf50b185.png" width=500>
 </p>
 
+Please cite our work if you find it useful in your research:
+
+```bibtex
+@article{wilson2020bayesian,
+  title={Bayesian Deep Learning and a Probabilistic Perspective of Generalization},
+  author={Wilson, Andrew Gordon and Izmailov, Pavel},
+  journal={arXiv preprint arXiv:2002.08791},
+  year={2020}
+}
+```
 
 ## Requirements
 
