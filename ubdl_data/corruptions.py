@@ -1,4 +1,5 @@
-# Copied from https://github.com/hendrycks/robustness/blob/master/ImageNet-C/create_c/make_cifar_c.py
+# This code is udapted from from https://github.com/hendrycks/robustness/blob/master/ImageNet-C/create_c/make_cifar_c.py
+# Minor restructuring has been applied
 
 from PIL import Image
 import os.path
