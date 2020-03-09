@@ -127,7 +127,7 @@ independently trained models for different levels of corruption severity.
 ## Prior Experiments
 
 For the experiments on prior variance dependence in Lenet-5, VGG-16 and PreResNet-20, we train SWAG models 
-with comands listed above, setting `--wd=0.` and
+with commands listed above, setting `--wd=0.` and
 varying `--prior_var` parameter.
 
 For the other experiments on priors we provide iPython notebooks in `experiments/priors`.
