@@ -177,6 +177,11 @@ Below we show the predictive distribution for (__left__:) 200 chains of Hamilton
   <img src="https://user-images.githubusercontent.com/14368801/74969777-2ae08a80-53eb-11ea-97d7-659bb26eb548.png" width=250>
 </p>
 
+## Training and Evaluating MultiSWAG
+
+To train a MultiSWAG model you can train several SWAG models independently, and then ensemble the predictions of the samples produced from each of the SWAG models. 
+We provide an example script in `experiments/train/run_multiswag.sh`, which trains and evaluates a MultiSWAG model with 3 independent SWAG models using a VGG-16 on CIFAR-100. 
+
 
 ## References for Code Base
 
