@@ -70,7 +70,7 @@ The files and scripts for reproducing the experiments are organized as follows:
 |   |   +-- data.npz (Data saved as an .npz file)
 ```
 
-## Training SGD, SWAG and SWA models
+## Training SGD, SWA, SWAG, and MultiSWAG models
 
 ```bash
 # PreResNet20, CIFAR10
@@ -96,6 +96,9 @@ python3 experiments/train/run_swag.py --data_path=~/datasets/ --epochs=50 --data
       --model=LeNet5 --lr_init=0.05 --swag --swag_start=25 --swag_lr=0.01 --cov_mat --use_test \
       --wd=0. --prior_var=1e-1 --seed 1 --dir=<DIR>
 ```
+
+To train a MultiSWAG model you can train several SWAG models independently, and then ensemble the predictions of the samples produced from each of the SWAG models. 
+We provide an example script in `experiments/train/run_multiswag.sh`, which trains and evaluates a MultiSWAG model with 3 independent SWAG models using a VGG-16 on CIFAR-100. 
 
 ## Preparing CIFAR10-C
 
@@ -176,11 +179,6 @@ Below we show the predictive distribution for (__left__:) 200 chains of Hamilton
   <img src="https://user-images.githubusercontent.com/14368801/74969774-2a47f400-53eb-11ea-9675-abeee0b71a71.png" width=250>
   <img src="https://user-images.githubusercontent.com/14368801/74969777-2ae08a80-53eb-11ea-97d7-659bb26eb548.png" width=250>
 </p>
-
-## Training and Evaluating MultiSWAG
-
-To train a MultiSWAG model you can train several SWAG models independently, and then ensemble the predictions of the samples produced from each of the SWAG models. 
-We provide an example script in `experiments/train/run_multiswag.sh`, which trains and evaluates a MultiSWAG model with 3 independent SWAG models using a VGG-16 on CIFAR-100. 
 
 
 ## References for Code Base
