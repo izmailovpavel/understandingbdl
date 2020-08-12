@@ -2,7 +2,7 @@
 
 This repository contains experiments for the paper
 
-_Bayesian Deep Learning and a Probabilistic Perspective of Generalization_
+[_Bayesian Deep Learning and a Probabilistic Perspective of Generalization_](https://arxiv.org/abs/2002.08791)
 
 by Andrew Gordon Wilson and Pavel Izmailov.
 
