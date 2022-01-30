@@ -80,7 +80,7 @@ class SWAG(torch.nn.Module):
         eps_low_rank = torch.randn(self.cov_factor.size()[0])
         z = self.cov_factor.t() @ eps_low_rank
         if diag_noise:
-            z += variance * torch.randn_like(variance)
+            z += variance.sqrt() * torch.randn_like(variance)
         z *= scale ** 0.5
         sample = mean + z
 
